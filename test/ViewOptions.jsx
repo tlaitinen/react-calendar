@@ -3,10 +3,17 @@ import PropTypes from 'prop-types';
 
 export default function ViewOptions({
   setState,
+  showDoubleView,
   showFixedNumberOfWeeks,
   showNeighboringMonth,
   showWeekNumbers,
 }) {
+  function onShowDoubleViewChange(event) {
+    const { checked } = event.target;
+
+    setState({ showDoubleView: checked });
+  }
+
   function onShowFixedNumberOfWeeksChange(event) {
     const { checked } = event.target;
 
@@ -30,6 +37,18 @@ export default function ViewOptions({
       <legend htmlFor="viewoptions">
         View options
       </legend>
+
+      <div>
+        <input
+          id="showDoubleView"
+          type="checkbox"
+          checked={showDoubleView}
+          onChange={onShowDoubleViewChange}
+        />
+        <label htmlFor="showDoubleView">
+          Show double view
+        </label>
+      </div>
 
       <div>
         <input
@@ -73,6 +92,7 @@ export default function ViewOptions({
 
 ViewOptions.propTypes = {
   setState: PropTypes.func.isRequired,
+  showDoubleView: PropTypes.bool.isRequired,
   showFixedNumberOfWeeks: PropTypes.bool.isRequired,
   showNeighboringMonth: PropTypes.bool.isRequired,
   showWeekNumbers: PropTypes.bool.isRequired,

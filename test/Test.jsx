@@ -92,6 +92,7 @@ export default class Test extends PureComponent {
     minDetail: 'century',
     returnValue: 'start',
     selectRange: false,
+    showDoubleView: false,
     showFixedNumberOfWeeks: false,
     showNeighboringMonth: true,
     showWeekNumbers: false,
@@ -135,6 +136,7 @@ export default class Test extends PureComponent {
       minDetail,
       returnValue,
       selectRange,
+      showDoubleView,
       showNeighboringMonth,
       showWeekNumbers,
       value,
@@ -176,8 +178,9 @@ export default class Test extends PureComponent {
               value={value}
             />
             <ViewOptions
-              showFixedNumberOfWeeks={showFixedNumberOfWeeks}
               setState={setState}
+              showDoubleView={showDoubleView}
+              showFixedNumberOfWeeks={showFixedNumberOfWeeks}
               showNeighboringMonth={showNeighboringMonth}
               showWeekNumbers={showWeekNumbers}
             />
@@ -193,7 +196,6 @@ export default class Test extends PureComponent {
               <Calendar
                 activeStartDate={new Date(2017, 0, 1)}
                 className="myCustomCalendarClassName"
-                showFixedNumberOfWeeks={showFixedNumberOfWeeks}
                 locale={locale}
                 maxDate={maxDate}
                 maxDetail={maxDetail}
@@ -212,12 +214,14 @@ export default class Test extends PureComponent {
                 onDrillUp={({ activeStartDate, view }) => {
                   console.log('Drilled up to', view, activeStartDate);
                 }}
-                selectRange={selectRange}
-                tileClassName={tileClassName}
-                tileContent={tileContent}
                 returnValue={returnValue}
+                selectRange={selectRange}
+                showDoubleView={showDoubleView}
+                showFixedNumberOfWeeks={showFixedNumberOfWeeks}
                 showNeighboringMonth={showNeighboringMonth}
                 showWeekNumbers={showWeekNumbers}
+                tileClassName={tileClassName}
+                tileContent={tileContent}
                 value={value}
               />
             </form>

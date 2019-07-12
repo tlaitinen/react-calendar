@@ -9,12 +9,15 @@ import DecadeView from './DecadeView';
 import YearView from './YearView';
 import MonthView from './MonthView';
 
-import { getBegin, getEnd, getValueRange } from './shared/dates';
+import {
+  getBegin, getBeginNext, getEnd, getValueRange,
+} from './shared/dates';
 import {
   isCalendarType, isClassName, isMaxDate, isMinDate, isValue,
 } from './shared/propTypes';
 import { between, callIfDefined, mergeFunctions } from './shared/utils';
 
+const baseClassName = 'react-calendar';
 const allViews = ['century', 'decade', 'year', 'month'];
 const allValueTypes = [...allViews.slice(1), 'day'];
 
@@ -355,7 +358,7 @@ export default class Calendar extends Component {
     this.setState({ hover: null });
   }
 
-  renderContent() {
+  renderContent(next) {
     const {
       calendarType,
       locale,
@@ -368,9 +371,15 @@ export default class Calendar extends Component {
       tileDisabled,
     } = this.props;
     const {
-      activeStartDate, hover, value, view,
+      activeStartDate: currentActiveStartDate, hover, value, view,
     } = this.state;
     const { onMouseOver, valueType } = this;
+
+    const activeStartDate = (
+      next
+        ? getBeginNext(view, currentActiveStartDate)
+        : currentActiveStartDate
+    );
 
     const commonProps = {
       activeStartDate,
@@ -472,6 +481,7 @@ export default class Calendar extends Component {
       prev2Label,
       prevAriaLabel,
       prevLabel,
+      showDoubleView,
     } = this.props;
     const { activeStartDate, view } = this.state;
 
@@ -494,6 +504,7 @@ export default class Calendar extends Component {
         prevAriaLabel={prevAriaLabel}
         prevLabel={prevLabel}
         setActiveStartDate={this.setActiveStartDate}
+        showDoubleView={showDoubleView}
         view={view}
         views={getLimitedViews(minDetail, maxDetail)}
       />
@@ -501,7 +512,7 @@ export default class Calendar extends Component {
   }
 
   render() {
-    const { className, selectRange } = this.props;
+    const { className, selectRange, showDoubleView } = this.props;
     const { value } = this.state;
     const { onMouseOut } = this;
     const valueArray = [].concat(value);
@@ -509,15 +520,19 @@ export default class Calendar extends Component {
     return (
       <div
         className={mergeClassNames(
-          'react-calendar',
-          selectRange && valueArray.length === 1 && 'react-calendar--selectRange',
+          baseClassName,
+          selectRange && valueArray.length === 1 && `${baseClassName}--selectRange`,
+          showDoubleView && `${baseClassName}--doubleView`,
           className,
         )}
         onMouseOut={selectRange ? onMouseOut : null}
         onBlur={selectRange ? onMouseOut : null}
       >
         {this.renderNavigation()}
-        {this.renderContent()}
+        <div className={`${baseClassName}__viewContainer`}>
+          {this.renderContent()}
+          {showDoubleView && this.renderContent(true)}
+        </div>
       </div>
     );
   }
@@ -566,6 +581,7 @@ Calendar.propTypes = {
   renderChildren: PropTypes.func,
   returnValue: PropTypes.oneOf(['start', 'end', 'range']), // For backwards compatibility
   selectRange: PropTypes.bool,
+  showDoubleView: PropTypes.bool,
   showFixedNumberOfWeeks: PropTypes.bool,
   showNavigation: PropTypes.bool,
   showNeighboringMonth: PropTypes.bool,
